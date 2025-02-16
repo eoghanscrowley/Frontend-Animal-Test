@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { Animal, AnimalStats } from '../types/animal.types';
+import { Animal } from '../types/animal.types';
 
 const initialAnimals: Animal[] = [
     {
@@ -15,7 +15,7 @@ const initialAnimals: Animal[] = [
 
 interface AnimalContextType {
     animals: Animal[];
-    addAnimal: (name: string, stats: AnimalStats) => void;
+    addAnimal: (name: string) => void;
 }
 
 const AnimalContext = createContext<AnimalContextType | undefined>(undefined);
@@ -23,11 +23,15 @@ const AnimalContext = createContext<AnimalContextType | undefined>(undefined);
 export function AnimalProvider({ children }: { children: ReactNode }) {
     const [animals, setAnimals] = useState<Animal[]>(initialAnimals);
 
-    const addAnimal = (name: string, stats: AnimalStats) => {
+    const addAnimal = (name: string) => {
         const newAnimal: Animal = {
             id: crypto.randomUUID(),
             name,
-            stats,
+            stats: {
+                happiness: 50,
+                hunger: 50,
+                sleep: 50,
+            },
         };
         setAnimals(prev => [...prev, newAnimal]);
     };
