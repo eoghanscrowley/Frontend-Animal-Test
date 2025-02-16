@@ -19,15 +19,19 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
     // Add useEffect for periodic updates
     useEffect(() => {
         const timer = setInterval(() => {
-            setAnimals(prev => prev.map(animal => ({
-                ...animal,
-                stats: {
-                    ...animal.stats,
-                    sleep: Math.min(100, animal.stats.sleep + 2),
-                    happiness: Math.max(0, animal.stats.happiness - 2),
-                    hunger: Math.min(100, animal.stats.hunger + 2)
-                }
-            })));
+            setAnimals(prev => prev.map(animal => {
+                // Calculate happiness decrease based on stats
+                const happinessDecrease = animal.stats.hunger >= 80 || animal.stats.sleep >= 80 ? 4 : 2;
+                return {
+                    ...animal,
+                    stats: {
+                        ...animal.stats,
+                        sleep: Math.min(100, animal.stats.sleep + 2),
+                        happiness: Math.max(0, animal.stats.happiness - happinessDecrease),
+                        hunger: Math.min(100, animal.stats.hunger + 2)
+                    }
+                };
+            }));
         }, 10000); // Update every 10 seconds
 
         return () => clearInterval(timer);
