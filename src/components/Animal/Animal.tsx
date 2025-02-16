@@ -1,9 +1,14 @@
 import { Animal as AnimalType } from "../../types/animal.types";
-
+import { useAnimalContext } from "../../context/AnimalContext";
 import "./Animal.css";
 
 function AnimalStat(
-    { name, value, actionName }: { name: string, value: number, actionName: string }
+    { name, value, actionName, onClick }: { 
+        name: string, 
+        value: number, 
+        actionName: string,
+        onClick: () => void 
+    }
 ) {
     return (
         <div className="stat">
@@ -11,12 +16,20 @@ function AnimalStat(
             <div className="meter">
                 <div className="meter-fill" style={{ width: `${value}%` }} />
             </div>
-            <button className="action-button">{actionName}</button>
+            <button 
+                className="action-button"
+                onClick={onClick}
+                data-testid={`${actionName.toLowerCase()}-button`}
+            >
+                {actionName}
+            </button>
         </div>
     )
 }
 
 export default function Animal({ animal }: { animal: AnimalType }) {
+    const { playWithAnimal } = useAnimalContext();
+
     return (
         <div className="animal-wrapper">
             <div className="animal-container">
@@ -35,16 +48,19 @@ export default function Animal({ animal }: { animal: AnimalType }) {
                         name="Hunger"
                         value={animal.stats.hunger}
                         actionName="Feed"
+                        onClick={() => {}}
                     />
                     <AnimalStat
                         name="Happiness"
                         value={animal.stats.happiness}
                         actionName="Play"
+                        onClick={() => playWithAnimal(animal.id)}
                     />
                     <AnimalStat
                         name="Sleep"
                         value={animal.stats.sleep}
                         actionName="Rest"
+                        onClick={() => {}}
                     />
                 </div>
             </div>

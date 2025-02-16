@@ -6,6 +6,7 @@ const initialAnimals: Animal[] = [];
 interface AnimalContextType {
     animals: Animal[];
     addAnimal: (name: string, type: AnimalType) => void;
+    playWithAnimal: (id: string) => void;
 }
 
 const AnimalContext = createContext<AnimalContextType | undefined>(undefined);
@@ -27,11 +28,26 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
         setAnimals(prev => [...prev, newAnimal]);
     };
 
+    const playWithAnimal = (id: string) => {
+        setAnimals(prev => prev.map(animal => {
+            if (animal.id === id) {
+                return {
+                    ...animal,
+                    stats: {
+                        ...animal.stats,
+                        happiness: Math.min(100, animal.stats.happiness + 10)
+                    }
+                };
+            }
+            return animal;
+        }));
+    };
+
     return (
-        <AnimalContext.Provider value={{ animals, addAnimal }}>
+        <AnimalContext.Provider value={{ animals, addAnimal, playWithAnimal }}>
             {children}
         </AnimalContext.Provider>
-    )
+    );
 }
 
 export function useAnimalContext() {
