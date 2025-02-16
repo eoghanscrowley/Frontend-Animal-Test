@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { render } from "@testing-library/react";
-import { mock } from "bun:test";
-
-import AddAnimalForm from "../components/AddAnimalForm/AddAnimalForm";
-import AnimalList from "../components/AnimalList/AnimalList";
+import { install } from "@sinonjs/fake-timers";
+import { mock, beforeEach, afterEach } from "bun:test";
 
 import { AnimalProvider } from "../context/AnimalContext";
 import { useAnimalContext } from "../context/AnimalContext";
@@ -39,4 +37,18 @@ export const renderWithProvider = (component: React.ReactNode) => {
     );
 
     return { animalsCallback };
+}
+
+export function fakeTimers() {
+    const clock = install();
+
+    beforeEach(() => {
+        clock.reset();
+    });
+
+    afterEach(() => {
+        clock.uninstall();
+    });
+
+    return clock;
 }

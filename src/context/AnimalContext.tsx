@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Animal, AnimalType } from '../types/animal.types';
 
 const initialAnimals: Animal[] = [];
@@ -15,6 +15,21 @@ const AnimalContext = createContext<AnimalContextType | undefined>(undefined);
 
 export function AnimalProvider({ children }: { children: ReactNode }) {
     const [animals, setAnimals] = useState<Animal[]>(initialAnimals);
+
+    // Add useEffect for periodic updates
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setAnimals(prev => prev.map(animal => ({
+                ...animal,
+                stats: {
+                    ...animal.stats,
+                    sleep: Math.min(100, animal.stats.sleep + 2)
+                }
+            })));
+        }, 10000); // Update every 10 seconds
+
+        return () => clearInterval(timer);
+    }, []);
 
     const addAnimal = (name: string, type: AnimalType) => {
         const newAnimal: Animal = {
