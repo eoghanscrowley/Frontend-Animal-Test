@@ -1,5 +1,19 @@
 import "./Animal.css";
 
+function AnimalStat(
+    { name, value, actionName }: { name: string, value: number, actionName: string }
+) {
+    return (
+        <div className="stat">
+            <strong>{name}:</strong>
+            <div className="meter">
+                <div className="meter-fill" style={{ width: `${value}%` }} />
+            </div>
+            <button className="action-button">{actionName}</button>
+        </div>
+    )
+}
+
 export default function Animal() {
     return (
         <div className="animal-container">
@@ -11,29 +25,11 @@ export default function Animal() {
                     className="animal-image"
                 />
                 <h2>Animal Name</h2>
-                </div>
-                <div className="animal-stats">
-                <div className="stat">
-                    <strong>Hunger:</strong>
-                    <div className="meter">
-                        <div className="meter-fill" style={{ width: "60%" }} />
-                    </div>
-                    <button className="action-button">Feed</button>
-                </div>
-                <div className="stat">
-                    <strong>Happiness:</strong>
-                    <div className="meter">
-                        <div className="meter-fill" style={{ width: "80%" }} />
-                    </div>
-                    <button className="action-button">Play</button>
-                </div>
-                <div className="stat">
-                    <strong>Sleep:</strong>
-                    <div className="meter">
-                        <div className="meter-fill" style={{ width: "50%" }} />
-                    </div>
-                    <button className="action-button">Rest</button>
-                </div>
+            </div>
+            <div className="animal-stats">
+                <AnimalStat name="Hunger" value={60} actionName="Feed" />
+                <AnimalStat name="Happiness" value={80} actionName="Play" />
+                <AnimalStat name="Sleep" value={50} actionName="Rest" />
             </div>
         </div>
     )
