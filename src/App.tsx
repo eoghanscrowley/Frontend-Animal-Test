@@ -1,23 +1,18 @@
-import Animal from "./components/Animal/Animal";
 import AddAnimalForm from "./components/AddAnimalForm/AddAnimalForm";
+import AnimalList from "./components/AnimalList/AnimalList";
+
+import { AnimalProvider } from "./context/AnimalContext";
+
 import "./App.css";
 
 function App() {
     return (
-        <div className="animal-page">
-            <AddAnimalForm />
-            <Animal
-              animal={{
-                id: crypto.randomUUID(),
-                name: "Stefan",
-                stats: {
-                    happiness: 80,
-                    hunger: 60,
-                    sleep: 50,
-                },
-              }}
-            />
-        </div>
+        <AnimalProvider>
+            <div className="animal-page">
+                <AddAnimalForm />
+                <AnimalList />
+            </div>
+        </AnimalProvider>
     );
 }
 
