@@ -23,7 +23,7 @@ export default function Animal({ animal }: { animal: AnimalType }) {
                 <h1>Poodle</h1>
                 <div className="animal-animal">
                     <img
-                        src="src/poodle.svg"
+                        src="src/svg/poodle.svg"
                         alt="Your animal"
                         className="animal-image"
                     />
