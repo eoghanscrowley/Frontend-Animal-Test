@@ -1,11 +1,11 @@
 import Animal from "./components/Animal/Animal";
-
+import AddAnimalForm from "./components/AddAnimalForm/AddAnimalForm";
 import "./App.css";
 
 function App() {
     return (
         <div className="animal-page">
-            <button>Add Animal</button>
+            <AddAnimalForm />
             <div className="animal-wrapper">
                 <Animal
                   animal={{
