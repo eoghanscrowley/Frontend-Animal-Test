@@ -28,7 +28,7 @@ function AnimalStat(
 }
 
 export default function Animal({ animal }: { animal: AnimalType }) {
-    const { playWithAnimal, feedAnimal } = useAnimalContext();
+    const { playWithAnimal, feedAnimal, restAnimal } = useAnimalContext();
 
     return (
         <div className="animal-wrapper">
@@ -60,7 +60,7 @@ export default function Animal({ animal }: { animal: AnimalType }) {
                         name="Sleep"
                         value={animal.stats.sleep}
                         actionName="Rest"
-                        onClick={() => {}}
+                        onClick={() => restAnimal(animal.id)}
                     />
                 </div>
             </div>

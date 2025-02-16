@@ -8,6 +8,7 @@ interface AnimalContextType {
     addAnimal: (name: string, type: AnimalType) => void;
     playWithAnimal: (id: string) => void;
     feedAnimal: (id: string) => void;
+    restAnimal: (id: string) => void;
 }
 
 const AnimalContext = createContext<AnimalContextType | undefined>(undefined);
@@ -59,12 +60,28 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
         }));
     };
 
+    const restAnimal = (id: string) => {
+        setAnimals(prev => prev.map(animal => {
+            if (animal.id === id) {
+                return {
+                    ...animal,
+                    stats: {
+                        ...animal.stats,
+                        sleep: Math.max(0, animal.stats.sleep - 10)
+                    }
+                };
+            }
+            return animal;
+        }));
+    };
+
     return (
         <AnimalContext.Provider value={{ 
             animals, 
             addAnimal, 
             playWithAnimal,
-            feedAnimal
+            feedAnimal,
+            restAnimal
         }}>
             {children}
         </AnimalContext.Provider>
