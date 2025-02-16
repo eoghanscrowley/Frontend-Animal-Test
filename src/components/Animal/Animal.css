@@ -1,3 +1,10 @@
+.animal-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
 .animal-container {
     text-align: center;
     margin: 20px auto;

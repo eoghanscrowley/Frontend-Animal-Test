@@ -82,10 +82,3 @@ button:focus-visible {
 .animal-page > button {
   margin: 20px;
 }
-
-.animal-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-}
