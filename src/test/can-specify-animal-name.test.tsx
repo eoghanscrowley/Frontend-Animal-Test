@@ -1,31 +1,14 @@
-import { useEffect } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, test, expect, mock } from "bun:test";
 
 import AddAnimalForm from "../components/AddAnimalForm/AddAnimalForm";
 import AnimalList from "../components/AnimalList/AnimalList";
-import { useAnimalContext, AnimalProvider } from "../context/AnimalContext";
+import { AnimalProvider } from "../context/AnimalContext";
+
+import { TestContextConsumer } from "./test-utils";
 
 import { Animal } from "../types/animal.types";
 
-
-/**
- * A component that allows us to test the AnimalContext.
- * 
- * @param onAnimalsChange - A function that will be called with the current list of animals.
- * @returns null
- */
-function TestContextConsumer(
-    { onAnimalsChange }: { onAnimalsChange: (animals: Animal[]) => void }
-) {
-    const { animals } = useAnimalContext();
-
-    useEffect(() => {
-        onAnimalsChange(animals);
-    }, [animals, onAnimalsChange]);
-
-    return null;
-}
 
 describe("Can specify animal name", () => {
     const renderWithProvider = () => {
