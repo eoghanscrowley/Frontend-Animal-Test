@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Animal, AnimalType } from '../types/animal.types';
+import { Animal, AnimalType, ANIMAL_RATE_CONFIGS } from '../types/animal.types';
 
 const initialAnimals: Animal[] = [];
 
@@ -20,15 +20,18 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const timer = setInterval(() => {
             setAnimals(prev => prev.map(animal => {
-                // Calculate happiness decrease based on stats
-                const happinessDecrease = animal.stats.hunger >= 80 || animal.stats.sleep >= 80 ? 4 : 2;
+                const rates = ANIMAL_RATE_CONFIGS[animal.type];
+                const happinessDecrease = (animal.stats.hunger >= 80 || animal.stats.sleep >= 80) 
+                    ? rates.happinessRate * 2 
+                    : rates.happinessRate;
+                
                 return {
                     ...animal,
                     stats: {
                         ...animal.stats,
-                        sleep: Math.min(100, animal.stats.sleep + 2),
+                        sleep: Math.min(100, animal.stats.sleep + rates.sleepRate),
                         happiness: Math.max(0, animal.stats.happiness - happinessDecrease),
-                        hunger: Math.min(100, animal.stats.hunger + 2)
+                        hunger: Math.min(100, animal.stats.hunger + rates.hungerRate)
                     }
                 };
             }));

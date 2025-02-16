@@ -6,6 +6,8 @@ import AnimalList from "../components/AnimalList/AnimalList";
 
 import { renderWithProvider, fakeTimers } from "./test-utils";
 
+import { ANIMAL_RATE_CONFIGS, Animal } from "../types/animal.types";
+
 describe("Happiness decreases over time", () => {
     test("animal happiness should decrease periodically", () => {
         const clock = fakeTimers();
@@ -22,6 +24,10 @@ describe("Happiness decreases over time", () => {
         
         fireEvent.change(nameInput, { target: { value: "Happy" } });
         fireEvent.submit(form);
+
+        const mostRecentState = animalsCallback.mock.calls[animalsCallback.mock.calls.length - 1][0];
+        const animalType = (mostRecentState[0] as Animal).type;
+        const happinessRate = ANIMAL_RATE_CONFIGS[animalType].happinessRate;
 
         // Initial happiness should be 50
         expect(animalsCallback).toHaveBeenLastCalledWith([
@@ -43,7 +49,7 @@ describe("Happiness decreases over time", () => {
             expect.objectContaining({
                 name: "Happy",
                 stats: expect.objectContaining({
-                    happiness: 38
+                    happiness: 50 - (happinessRate * 6)
                 })
             })
         ]);
@@ -58,7 +64,7 @@ describe("Happiness decreases over time", () => {
             expect.objectContaining({
                 name: "Happy",
                 stats: expect.objectContaining({
-                    happiness: 26
+                    happiness: 50 - (happinessRate * 12)
                 })
             })
         ]);

@@ -6,6 +6,8 @@ import AnimalList from "../components/AnimalList/AnimalList";
 
 import { renderWithProvider, fakeTimers } from "./test-utils";
 
+import { Animal, ANIMAL_RATE_CONFIGS } from "../types/animal.types";
+
 describe("Hunger increases over time", () => {
     test("animal hunger should increase periodically", () => {
         const clock = fakeTimers();
@@ -23,6 +25,10 @@ describe("Hunger increases over time", () => {
         fireEvent.change(nameInput, { target: { value: "Hungry" } });
         fireEvent.submit(form);
 
+        const mostRecentState = animalsCallback.mock.calls[animalsCallback.mock.calls.length - 1][0];
+        const animalType = (mostRecentState[0] as Animal).type;
+        const hungerRate = ANIMAL_RATE_CONFIGS[animalType].hungerRate;
+        
         // Initial hunger should be 50
         expect(animalsCallback).toHaveBeenLastCalledWith([
             expect.objectContaining({
@@ -43,7 +49,7 @@ describe("Hunger increases over time", () => {
             expect.objectContaining({
                 name: "Hungry",
                 stats: expect.objectContaining({
-                    hunger: 62
+                    hunger: 50 + (hungerRate * 6)
                 })
             })
         ]);
@@ -58,7 +64,7 @@ describe("Hunger increases over time", () => {
             expect.objectContaining({
                 name: "Hungry",
                 stats: expect.objectContaining({
-                    hunger: 74
+                    hunger: 50 + (hungerRate * 12)
                 })
             })
         ]);

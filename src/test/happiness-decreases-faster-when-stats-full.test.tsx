@@ -6,6 +6,8 @@ import AnimalList from "../components/AnimalList/AnimalList";
 
 import { renderWithProvider, fakeTimers } from "./test-utils";
 
+import { ANIMAL_RATE_CONFIGS, Animal } from "../types/animal.types";
+
 describe("Happiness decreases faster when stats are full", () => {
     test("happiness should decrease faster when hunger is full", () => {
         const clock = fakeTimers();
@@ -52,8 +54,9 @@ describe("Happiness decreases faster when stats are full", () => {
         const finalState = animalsCallback.mock.calls[animalsCallback.mock.calls.length - 1][0];
         const happinessDecrease = initialHappiness - finalState[0].stats.happiness;
         
-        // Should decrease by 4 instead of just 2
-        expect(happinessDecrease).toBe(4);
+        // Should be double normal rate
+        const animalType = (finalState[0] as Animal).type;
+        expect(happinessDecrease).toBe(ANIMAL_RATE_CONFIGS[animalType].happinessRate * 2);
     });
 
     test("happiness should decrease faster when sleepiness is full", () => {
@@ -101,7 +104,8 @@ describe("Happiness decreases faster when stats are full", () => {
         const finalState = animalsCallback.mock.calls[animalsCallback.mock.calls.length - 1][0];
         const happinessDecrease = initialHappiness - finalState[0].stats.happiness;
         
-        // Should decrease by 4 instead of just 2
-        expect(happinessDecrease).toBe(4);
+        // Should be double normal rate
+        const animalType = (finalState[0] as Animal).type;
+        expect(happinessDecrease).toBe(ANIMAL_RATE_CONFIGS[animalType].happinessRate * 2);
     });
 }); 
