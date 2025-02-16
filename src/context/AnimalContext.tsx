@@ -1,17 +1,7 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { Animal } from '../types/animal.types';
 
-const initialAnimals: Animal[] = [
-    {
-        id: crypto.randomUUID(),
-        name: "Stefan",
-        stats: {
-            happiness: 80,
-            hunger: 60,
-            sleep: 50,
-        },
-    },
-];
+const initialAnimals: Animal[] = [];
 
 interface AnimalContextType {
     animals: Animal[];
