@@ -1,32 +1,22 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, test, expect, mock } from "bun:test";
+import { screen, fireEvent } from "@testing-library/react";
+import { describe, test, expect } from "bun:test";
 
 import AddAnimalForm from "../components/AddAnimalForm/AddAnimalForm";
 import AnimalList from "../components/AnimalList/AnimalList";
-import { AnimalProvider } from "../context/AnimalContext";
 
-import { TestContextConsumer } from "./test-utils";
-
-import { Animal } from "../types/animal.types";
+import { renderWithProvider } from "./test-utils";
 
 
 describe("Can specify animal name", () => {
-    const renderWithProvider = () => {
-        const animalsCallback = mock((animals: Animal[]) => animals);
-
-        render(
-            <AnimalProvider>
-                <AddAnimalForm />
-                <AnimalList />
-                <TestContextConsumer onAnimalsChange={animalsCallback} />
-            </AnimalProvider>
-        );
-
-        return { animalsCallback };
-    }
+    
 
     test("should add a new animal with the given name to the context and display it in the ui", () => {
-        const { animalsCallback } = renderWithProvider();
+        const { animalsCallback } = renderWithProvider(
+            <>
+                <AddAnimalForm />
+                <AnimalList />
+            </>
+        );
 
         const input = screen.getByTestId("animal-name-input");
         const form = screen.getByTestId("add-animal-form");
@@ -41,6 +31,7 @@ describe("Can specify animal name", () => {
         expect(animalsCallback).toHaveBeenLastCalledWith([{
             id: expect.any(String),
             name: "Stefan",
+            type: "poodle",
             stats: {
                 happiness: 50,
                 hunger: 50,
@@ -54,7 +45,12 @@ describe("Can specify animal name", () => {
     })
 
     test("should not add an animal with an empty name", () => {
-        const { animalsCallback } = renderWithProvider();
+        const { animalsCallback } = renderWithProvider(
+            <>
+                <AddAnimalForm />
+                <AnimalList />
+            </>
+        );
 
         const form = screen.getByTestId("add-animal-form");
         
