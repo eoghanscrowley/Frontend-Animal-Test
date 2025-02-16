@@ -20,10 +20,10 @@ export default function Animal({ animal }: { animal: AnimalType }) {
     return (
         <div className="animal-wrapper">
             <div className="animal-container">
-                <h1>Poodle</h1>
+                <h1>{animal.type}</h1>
                 <div className="animal-animal">
                     <img
-                        src="src/svg/poodle.svg"
+                        src={`src/svg/${animal.type}.svg`}
                         alt="Your animal"
                         className="animal-image"
                     />

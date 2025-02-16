@@ -16,6 +16,10 @@
     color: #2196f3;
    
 }
+
+.animal-container h1 {
+    text-transform: capitalize;
+}
   
 .animal-animal {
     margin-bottom: 20px;
