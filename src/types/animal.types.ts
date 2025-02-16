@@ -1,4 +1,4 @@
-interface AnimalStats {
+export interface AnimalStats {
     happiness: number;
     hunger: number;
     sleep: number;

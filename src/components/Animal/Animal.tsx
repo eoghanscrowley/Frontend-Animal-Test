@@ -1,3 +1,5 @@
+import { Animal as AnimalType } from "../../types/animal.types";
+
 import "./Animal.css";
 
 function AnimalStat(
@@ -14,7 +16,7 @@ function AnimalStat(
     )
 }
 
-export default function Animal() {
+export default function Animal({ animal }: { animal: AnimalType }) {
     return (
         <div className="animal-container">
             <h1>Poodle</h1>
@@ -25,11 +27,24 @@ export default function Animal() {
                     className="animal-image"
                 />
                 <h2>Animal Name</h2>
+                <p>{animal.name}</p>
             </div>
             <div className="animal-stats">
-                <AnimalStat name="Hunger" value={60} actionName="Feed" />
-                <AnimalStat name="Happiness" value={80} actionName="Play" />
-                <AnimalStat name="Sleep" value={50} actionName="Rest" />
+                <AnimalStat
+                    name="Hunger"
+                    value={animal.stats.hunger}
+                    actionName="Feed"
+                />
+                <AnimalStat
+                    name="Happiness"
+                    value={animal.stats.happiness}
+                    actionName="Play"
+                />
+                <AnimalStat
+                    name="Sleep"
+                    value={animal.stats.sleep}
+                    actionName="Rest"
+                />
             </div>
         </div>
     )
