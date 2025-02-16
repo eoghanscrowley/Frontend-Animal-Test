@@ -23,7 +23,8 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
                 ...animal,
                 stats: {
                     ...animal.stats,
-                    sleep: Math.min(100, animal.stats.sleep + 2)
+                    sleep: Math.min(100, animal.stats.sleep + 2),
+                    happiness: Math.max(0, animal.stats.happiness - 2)
                 }
             })));
         }, 10000); // Update every 10 seconds
