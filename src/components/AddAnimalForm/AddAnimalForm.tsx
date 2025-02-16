@@ -1,14 +1,19 @@
 import { useState } from "react";
 
+import { useAnimalContext } from "../../context/AnimalContext";
+
 import "./AddAnimalForm.css";
 
 export default function AddAnimalForm() {
     const [name, setName] = useState("");
+    const { addAnimal } = useAnimalContext();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(name);
-        setName("");
+        if (name.trim()) {
+            addAnimal(name);
+            setName("");
+        }
     };
 
     return (
