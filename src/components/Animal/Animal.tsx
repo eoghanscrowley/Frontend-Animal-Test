@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+
 import { Animal as AnimalType } from "../../types/animal.types";
 import { useAnimalContext } from "../../context/AnimalContext";
 import "./Animal.css";
@@ -33,7 +34,8 @@ const AnimalStat = memo(function AnimalStat({
             <div className="meter">
                 <div 
                     className="meter-fill" 
-                    style={meterStyle} 
+                    style={meterStyle}
+                    role="progressbar"
                     aria-valuenow={value}
                     aria-valuemin={0}
                     aria-valuemax={100}

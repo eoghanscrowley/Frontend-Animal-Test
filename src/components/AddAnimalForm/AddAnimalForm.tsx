@@ -37,6 +37,7 @@ export default memo(function AddAnimalForm() {
             className="add-animal-form"
             data-testid="add-animal-form"
             onSubmit={handleSubmit}
+            aria-label="Add new animal form"
         >
             <label htmlFor="animal-name">
                 Animal Name:
@@ -48,6 +49,7 @@ export default memo(function AddAnimalForm() {
                     value={name}
                     onChange={handleNameChange}
                     required
+                    aria-required="true"
                 />
             </label>
             <label htmlFor="animal-type">
@@ -57,6 +59,7 @@ export default memo(function AddAnimalForm() {
                     data-testid="animal-type-select"
                     value={type}
                     onChange={handleTypeChange}
+                    aria-label="Select animal type"
                 >
                     {ALL_ANIMAL_TYPES.map((animalType) => (
                         <option key={animalType} value={animalType}>
@@ -65,7 +68,12 @@ export default memo(function AddAnimalForm() {
                     ))}
                 </select>
             </label>
-            <button type="submit">Add Animal</button>
+            <button
+                type="submit"
+                aria-label="Add new animal"
+            >
+                Add Animal
+            </button>
         </form>
     );
 });
