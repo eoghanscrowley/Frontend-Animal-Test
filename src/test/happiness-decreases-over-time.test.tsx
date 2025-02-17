@@ -6,8 +6,9 @@ import AnimalList from "../components/AnimalList/AnimalList";
 
 import { renderWithProvider, fakeTimers } from "./test-utils";
 
-import { ANIMAL_RATE_CONFIGS, Animal } from "../types/animal.types";
-
+import { Animal } from "../types/animal.types";
+import { ANIMAL_RATE_CONFIGS } from "../constants/animal.constants";
+import { GAME_CONSTANTS } from "../constants/game.constants";
 describe("Happiness decreases over time", () => {
     test("animal happiness should decrease periodically", () => {
         const clock = fakeTimers();
@@ -41,7 +42,7 @@ describe("Happiness decreases over time", () => {
 
         // Advance time by 1 minute
         act(() => {
-            clock.tick(60000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 6);
         });
 
         // Happiness should have decreased
@@ -56,7 +57,7 @@ describe("Happiness decreases over time", () => {
 
         // Advance time by another minute
         act(() => {
-            clock.tick(60000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 6);
         });
 
         // Happiness should have decreased again
@@ -88,7 +89,7 @@ describe("Happiness decreases over time", () => {
 
         // Advance time by 30 minutes
         act(() => {
-            clock.tick(1800000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 180);
         });
 
         // Happiness should be capped at 0

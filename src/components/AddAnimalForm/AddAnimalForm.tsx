@@ -1,7 +1,8 @@
 import { memo, useState, useCallback } from "react";
 
 import { useAnimalContext } from "../../context/AnimalContext";
-import { AnimalType, ALL_ANIMAL_TYPES } from "../../types/animal.types";
+import { AnimalType } from "../../types/animal.types";
+import { ALL_ANIMAL_TYPES } from "../../constants/animal.constants";
 
 import "./AddAnimalForm.css";
 

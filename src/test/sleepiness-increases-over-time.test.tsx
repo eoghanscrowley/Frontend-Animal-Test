@@ -6,6 +6,8 @@ import AnimalList from "../components/AnimalList/AnimalList";
 
 import { renderWithProvider, fakeTimers } from "./test-utils";
 
+import { GAME_CONSTANTS } from "../constants/game.constants";
+
 
 describe("Sleepiness increases over time", () => {
     
@@ -37,7 +39,7 @@ describe("Sleepiness increases over time", () => {
 
         // Advance time by 1 minute
         act(() => {
-            clock.tick(60000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 6);
         });
 
         // Sleep should have increased
@@ -52,7 +54,7 @@ describe("Sleepiness increases over time", () => {
 
         // Advance time by another minute
         act(() => {
-            clock.tick(60000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 6);
         });
 
         // Sleep should have increased again
@@ -84,7 +86,7 @@ describe("Sleepiness increases over time", () => {
 
         // Advance time by 30 minutes
         act(() => {
-            clock.tick(1800000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 180);
         });
 
         // Sleep should be capped at 100

@@ -6,8 +6,9 @@ import AnimalList from "../components/AnimalList/AnimalList";
 
 import { renderWithProvider, fakeTimers } from "./test-utils";
 
-import { Animal, ANIMAL_RATE_CONFIGS } from "../types/animal.types";
-
+import { Animal } from "../types/animal.types";
+import { ANIMAL_RATE_CONFIGS } from "../constants/animal.constants";
+import { GAME_CONSTANTS } from "../constants/game.constants";
 describe("Hunger increases over time", () => {
     test("animal hunger should increase periodically", () => {
         const clock = fakeTimers();
@@ -28,7 +29,7 @@ describe("Hunger increases over time", () => {
         const mostRecentState = animalsCallback.mock.calls[animalsCallback.mock.calls.length - 1][0];
         const animalType = (mostRecentState[0] as Animal).type;
         const hungerRate = ANIMAL_RATE_CONFIGS[animalType].hungerRate;
-        
+
         // Initial hunger should be 50
         expect(animalsCallback).toHaveBeenLastCalledWith([
             expect.objectContaining({
@@ -41,7 +42,7 @@ describe("Hunger increases over time", () => {
 
         // Advance time by 1 minute
         act(() => {
-            clock.tick(60000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 6);
         });
 
         // Hunger should have increased
@@ -56,7 +57,7 @@ describe("Hunger increases over time", () => {
 
         // Advance time by another minute
         act(() => {
-            clock.tick(60000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 6);
         });
 
         // Hunger should have increased again
@@ -88,7 +89,7 @@ describe("Hunger increases over time", () => {
 
         // Advance time by 30 minutes
         act(() => {
-            clock.tick(1800000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 180);
         });
 
         // Hunger should be capped at 100

@@ -6,7 +6,9 @@ import AnimalList from "../components/AnimalList/AnimalList";
 
 import { renderWithProvider, fakeTimers } from "./test-utils";
 
-import { ANIMAL_RATE_CONFIGS, Animal } from "../types/animal.types";
+import { Animal } from "../types/animal.types";
+import { ANIMAL_RATE_CONFIGS } from "../constants/animal.constants";
+import { GAME_CONSTANTS } from "../constants/game.constants";
 
 describe("Happiness decreases faster when stats are full", () => {
     test("happiness should decrease faster when hunger is full", () => {
@@ -27,7 +29,7 @@ describe("Happiness decreases faster when stats are full", () => {
 
         // Get animal to full hunger, sleepiness and empty happiness by advancing time
         act(() => {
-            clock.tick(1800000); // 30 minutes to get hunger to 100
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 180); // 30 minutes to get hunger to 100
         });
 
         // Rest the animal to empty sleepiness to remove this stat from the equation
@@ -47,7 +49,7 @@ describe("Happiness decreases faster when stats are full", () => {
 
         // Advance time by 10 seconds
         act(() => {
-            clock.tick(10000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL);
         });
 
         // Verify happiness decreased faster
@@ -77,7 +79,7 @@ describe("Happiness decreases faster when stats are full", () => {
 
         // Get animal to full hunger, sleepiness and empty happiness by advancing time
         act(() => {
-            clock.tick(1800000); // 30 minutes to get both stats to 100
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 180); // 30 minutes to get both stats to 100
         });
 
          // Feed the animal to empty hunger to remove this stat from the equation
@@ -97,7 +99,7 @@ describe("Happiness decreases faster when stats are full", () => {
 
         // Advance time by 10 seconds
         act(() => {
-            clock.tick(10000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL);
         });
 
         // Verify happiness decreased even faster

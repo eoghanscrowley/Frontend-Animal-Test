@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { Animal, AnimalType, ANIMAL_RATE_CONFIGS } from '../types/animal.types';
 
+import { Animal, AnimalType } from '../types/animal.types';
+import { ANIMAL_RATE_CONFIGS } from '../constants/animal.constants';
+import { GAME_CONSTANTS } from '../constants/game.constants';
 const initialAnimals: Animal[] = [];
 
 /**
@@ -46,21 +48,34 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
         const timer = setInterval(() => {
             setAnimals(prev => prev.map(animal => {
                 const rates = ANIMAL_RATE_CONFIGS[animal.type];
-                const happinessDecrease = (animal.stats.hunger >= 80 || animal.stats.sleep >= 80) 
-                    ? rates.happinessRate * 2 
+                const increasedRateCondition = (
+                    animal.stats.hunger >= GAME_CONSTANTS.CRITICAL_STAT_THRESHOLD ||
+                    animal.stats.sleep >= GAME_CONSTANTS.CRITICAL_STAT_THRESHOLD
+                );
+                const happinessDecrease = increasedRateCondition 
+                    ? rates.happinessRate * GAME_CONSTANTS.STAT_MULTIPLIER
                     : rates.happinessRate;
                 
                 return {
                     ...animal,
                     stats: {
                         ...animal.stats,
-                        sleep: Math.min(100, animal.stats.sleep + rates.sleepRate),
-                        happiness: Math.max(0, animal.stats.happiness - happinessDecrease),
-                        hunger: Math.min(100, animal.stats.hunger + rates.hungerRate)
+                        sleep: Math.min(
+                            GAME_CONSTANTS.MAX_STAT_VALUE,
+                            animal.stats.sleep + rates.sleepRate
+                        ),
+                        happiness: Math.max(
+                            GAME_CONSTANTS.MIN_STAT_VALUE,
+                            animal.stats.happiness - happinessDecrease
+                        ),
+                        hunger: Math.min(
+                            GAME_CONSTANTS.MAX_STAT_VALUE,
+                            animal.stats.hunger + rates.hungerRate
+                        )
                     }
                 };
             }));
-        }, 10000); // Update every 10 seconds
+        }, GAME_CONSTANTS.TICK_INTERVAL);
 
         return () => clearInterval(timer);
     }, []);
@@ -71,9 +86,9 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
             name,
             type,
             stats: {
-                happiness: 50,
-                hunger: 50,
-                sleep: 50,
+                happiness: GAME_CONSTANTS.DEFAULT_STAT_VALUE,
+                hunger: GAME_CONSTANTS.DEFAULT_STAT_VALUE,
+                sleep: GAME_CONSTANTS.DEFAULT_STAT_VALUE,
             },
         };
         setAnimals(prev => [...prev, newAnimal]);
@@ -81,19 +96,28 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
 
     const playWithAnimal = useCallback((id: string) => {
         updateAnimalStats(id, (stats) => ({
-            happiness: Math.min(100, stats.happiness + 10)
+            happiness: Math.min(
+                GAME_CONSTANTS.MAX_STAT_VALUE,
+                stats.happiness + GAME_CONSTANTS.STAT_INCREMENT
+            )
         }));
     }, [updateAnimalStats]);
 
     const feedAnimal = useCallback((id: string) => {
         updateAnimalStats(id, (stats) => ({
-            hunger: Math.max(0, stats.hunger - 10)
+            hunger: Math.max(
+                GAME_CONSTANTS.MIN_STAT_VALUE,
+                stats.hunger - GAME_CONSTANTS.STAT_INCREMENT
+            )
         }));
     }, [updateAnimalStats]);
 
     const restAnimal = useCallback((id: string) => {
         updateAnimalStats(id, (stats) => ({
-            sleep: Math.max(0, stats.sleep - 10)
+            sleep: Math.max(
+                GAME_CONSTANTS.MIN_STAT_VALUE,
+                stats.sleep - GAME_CONSTANTS.STAT_INCREMENT
+            )
         }));
     }, [updateAnimalStats]);
 
