@@ -3,6 +3,10 @@ import { useAnimalContext } from "../../context/AnimalContext";
 
 import "./AnimalList.css";
 
+/**
+ * This component displays a list of animals.
+ * It provides a list of Animal components which are generated from the AnimalContext.
+ */
 export default function AnimalList() {
     const { animals } = useAnimalContext();
 

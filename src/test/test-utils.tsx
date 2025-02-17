@@ -10,7 +10,7 @@ import { Animal } from "../types/animal.types";
 /**
  * A component that allows us to test the AnimalContext.
  * 
- * @param onAnimalsChange - A function that will be called with the current list of animals.
+ * @param props - An object containing a function that will be called with the current list of animals.
  * @returns null
  */
 export function TestContextConsumer(
@@ -25,7 +25,13 @@ export function TestContextConsumer(
     return null;
 }
 
-
+/**
+ * This function renders a component within the AnimalProvider context.
+ * It also provides a way to test the AnimalContext.
+ * 
+ * @param component - The component to render.
+ * @returns An object containing the animalsCallback function.
+ */
 export const renderWithProvider = (component: React.ReactNode) => {
     const animalsCallback = mock((animals: Animal[]) => animals);
 
@@ -39,6 +45,11 @@ export const renderWithProvider = (component: React.ReactNode) => {
     return { animalsCallback };
 }
 
+/**
+ * This function sets up fake timers for testing.
+ * 
+ * @returns The clock object.
+ */
 export function fakeTimers() {
     const clock = install();
 

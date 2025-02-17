@@ -2,6 +2,10 @@ import { Animal as AnimalType } from "../../types/animal.types";
 import { useAnimalContext } from "../../context/AnimalContext";
 import "./Animal.css";
 
+/**
+ * This component displays a single stat of an animal.
+ * It provides a button to perform an action on the animal which relates to the stat.
+ */
 function AnimalStat(
     { name, value, actionName, onClick }: { 
         name: string, 
@@ -27,6 +31,10 @@ function AnimalStat(
     )
 }
 
+/**
+ * This component displays the information and stats of an animal.
+ * It provides buttons to perform actions on the animal.
+ */
 export default function Animal({ animal }: { animal: AnimalType }) {
     const { playWithAnimal, feedAnimal, restAnimal } = useAnimalContext();
 

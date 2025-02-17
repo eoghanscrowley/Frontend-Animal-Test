@@ -3,6 +3,9 @@ import { Animal, AnimalType, ANIMAL_RATE_CONFIGS } from '../types/animal.types';
 
 const initialAnimals: Animal[] = [];
 
+/**
+ * This interface defines the types of the values that the AnimalContext can provide.
+ */
 interface AnimalContextType {
     animals: Animal[];
     addAnimal: (name: string, type: AnimalType) => void;
@@ -13,6 +16,10 @@ interface AnimalContextType {
 
 const AnimalContext = createContext<AnimalContextType | undefined>(undefined);
 
+/**
+ * This component provides the AnimalContext to its children.
+ * It manages the state of the animals and provides functions to interact with them.
+ */
 export function AnimalProvider({ children }: { children: ReactNode }) {
     const [animals, setAnimals] = useState<Animal[]>(initialAnimals);
 
@@ -112,6 +119,9 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
     );
 }
 
+/**
+ * This hook allows other components to access the AnimalContext.
+ */
 export function useAnimalContext() {
     const context = useContext(AnimalContext);
     if (!context) {

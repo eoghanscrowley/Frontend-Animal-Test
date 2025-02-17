@@ -5,6 +5,11 @@ import { AnimalType, ALL_ANIMAL_TYPES } from "../../types/animal.types";
 
 import "./AddAnimalForm.css";
 
+/**
+ * This component allows the user to add a new animal to the app. 
+ * It provides a form for the user to enter the animal's name and type,
+ * and a button to submit the form.
+ */
 export default function AddAnimalForm() {
     const [name, setName] = useState("");
     const [type, setType] = useState<AnimalType>(ALL_ANIMAL_TYPES[0]);
