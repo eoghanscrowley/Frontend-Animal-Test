@@ -6,6 +6,8 @@ import AnimalList from "../components/AnimalList/AnimalList";
 
 import { renderWithProvider, fakeTimers } from "./test-utils";
 
+import { GAME_CONSTANTS } from "../constants/game.constants";
+
 describe("Different animal types have different rates", () => {
     test("different animals should have different rate changes", () => {
         const clock = fakeTimers();
@@ -52,7 +54,7 @@ describe("Different animal types have different rates", () => {
 
         // Advance time by 1 minute (6 ticks of 10 seconds)
         act(() => {
-            clock.tick(60000);
+            clock.tick(GAME_CONSTANTS.TICK_INTERVAL * 6);
         });
 
         // Verify different rates for different animals
