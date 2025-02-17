@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { Animal as AnimalType } from "../../types/animal.types";
 import { useAnimalContext } from "../../context/AnimalContext";
 import "./Animal.css";
@@ -23,13 +23,17 @@ const AnimalStat = memo(function AnimalStat({
     actionName, 
     onClick 
 }: AnimalStatProps) {
+    const meterStyle = useMemo(() => ({ 
+        width: `${value}%` 
+    }), [value]);
+
     return (
         <div className="stat">
             <strong>{name}:</strong>
             <div className="meter">
                 <div 
                     className="meter-fill" 
-                    style={{ width: `${value}%` }} 
+                    style={meterStyle} 
                     aria-valuenow={value}
                     aria-valuemin={0}
                     aria-valuemax={100}
