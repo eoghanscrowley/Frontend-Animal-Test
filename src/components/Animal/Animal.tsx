@@ -4,8 +4,7 @@ import { useAnimalContext } from "../../context/AnimalContext";
 import "./Animal.css";
 
 /**
- * This component displays a single stat of an animal.
- * It provides a button to perform an action on the animal which relates to the stat.
+ * This interface defines the props for the AnimalStat component.
  */
 interface AnimalStatProps {
     name: string;
@@ -14,6 +13,10 @@ interface AnimalStatProps {
     onClick: () => void;
 }
 
+/**
+ * This component displays a single stat of an animal.
+ * It provides a button to perform an action on the animal which relates to the stat.
+ */
 const AnimalStat = memo(function AnimalStat({ 
     name, 
     value, 
@@ -44,13 +47,16 @@ const AnimalStat = memo(function AnimalStat({
 });
 
 /**
- * This component displays the information and stats of an animal.
- * It provides buttons to perform actions on the animal.
+ * This interface defines the props for the Animal component.
  */
 interface AnimalProps {
     animal: AnimalType;
 }
 
+/**
+ * This component displays the information and stats of an animal.
+ * It provides buttons to perform actions on the animal.
+ */
 export default memo(function Animal({ animal }: AnimalProps) {
     const { playWithAnimal, feedAnimal, restAnimal } = useAnimalContext();
 
