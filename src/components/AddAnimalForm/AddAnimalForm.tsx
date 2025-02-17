@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState, useCallback } from "react";
 
 import { useAnimalContext } from "../../context/AnimalContext";
 import { AnimalType, ALL_ANIMAL_TYPES } from "../../types/animal.types";
@@ -10,18 +10,26 @@ import "./AddAnimalForm.css";
  * It provides a form for the user to enter the animal's name and type,
  * and a button to submit the form.
  */
-export default function AddAnimalForm() {
+export default memo(function AddAnimalForm() {
     const [name, setName] = useState("");
     const [type, setType] = useState<AnimalType>(ALL_ANIMAL_TYPES[0]);
     const { addAnimal } = useAnimalContext();
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (name.trim()) {
             addAnimal(name, type);
             setName("");
         }
-    };
+    }, [name, type, addAnimal]);
+
+    const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setName(e.target.value);
+    }, []);
+
+    const handleTypeChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+        setType(e.target.value as AnimalType);
+    }, []);
 
     return (
         <form
@@ -37,7 +45,8 @@ export default function AddAnimalForm() {
                     placeholder="Enter animal name"
                     data-testid="animal-name-input"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={handleNameChange}
+                    required
                 />
             </label>
             <label htmlFor="animal-type">
@@ -46,14 +55,16 @@ export default function AddAnimalForm() {
                     id="animal-type"
                     data-testid="animal-type-select"
                     value={type}
-                    onChange={(e) => setType(e.target.value as AnimalType)}
+                    onChange={handleTypeChange}
                 >
-                    {ALL_ANIMAL_TYPES.map((type: AnimalType) => (
-                        <option value={type} key={type}>{type}</option>
+                    {ALL_ANIMAL_TYPES.map((animalType) => (
+                        <option key={animalType} value={animalType}>
+                            {animalType}
+                        </option>
                     ))}
                 </select>
             </label>
             <button type="submit">Add Animal</button>
         </form>
     );
-}
+});
