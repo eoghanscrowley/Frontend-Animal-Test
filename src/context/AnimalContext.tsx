@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { Animal, AnimalType, ANIMAL_RATE_CONFIGS } from '../types/animal.types';
 
 const initialAnimals: Animal[] = [];
@@ -14,7 +14,7 @@ interface AnimalContextType {
     restAnimal: (id: string) => void;
 }
 
-const AnimalContext = createContext<AnimalContextType | undefined>(undefined);
+const AnimalContext = createContext<AnimalContextType | null>(null);
 
 /**
  * This component provides the AnimalContext to its children.
@@ -22,6 +22,24 @@ const AnimalContext = createContext<AnimalContextType | undefined>(undefined);
  */
 export function AnimalProvider({ children }: { children: ReactNode }) {
     const [animals, setAnimals] = useState<Animal[]>(initialAnimals);
+
+    const updateAnimalStats = useCallback((
+        id: string,
+        updateFn: (stats: Animal['stats']) => Partial<Animal['stats']>
+    ) => {
+        setAnimals(prev => prev.map(animal => {
+            if (animal.id === id) {
+                return {
+                    ...animal,
+                    stats: {
+                        ...animal.stats,
+                        ...updateFn(animal.stats)
+                    }
+                };
+            }
+            return animal;
+        }));
+    }, []);
 
     // Add useEffect for periodic updates
     useEffect(() => {
@@ -47,7 +65,7 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
         return () => clearInterval(timer);
     }, []);
 
-    const addAnimal = (name: string, type: AnimalType) => {
+    const addAnimal = useCallback((name: string, type: AnimalType) => {
         const newAnimal: Animal = {
             id: crypto.randomUUID(),
             name,
@@ -59,61 +77,36 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
             },
         };
         setAnimals(prev => [...prev, newAnimal]);
-    };
+    }, []);
 
-    const playWithAnimal = (id: string) => {
-        setAnimals(prev => prev.map(animal => {
-            if (animal.id === id) {
-                return {
-                    ...animal,
-                    stats: {
-                        ...animal.stats,
-                        happiness: Math.min(100, animal.stats.happiness + 10)
-                    }
-                };
-            }
-            return animal;
+    const playWithAnimal = useCallback((id: string) => {
+        updateAnimalStats(id, (stats) => ({
+            happiness: Math.min(100, stats.happiness + 10)
         }));
-    };
+    }, [updateAnimalStats]);
 
-    const feedAnimal = (id: string) => {
-        setAnimals(prev => prev.map(animal => {
-            if (animal.id === id) {
-                return {
-                    ...animal,
-                    stats: {
-                        ...animal.stats,
-                        hunger: Math.max(0, animal.stats.hunger - 10)
-                    }
-                };
-            }
-            return animal;
+    const feedAnimal = useCallback((id: string) => {
+        updateAnimalStats(id, (stats) => ({
+            hunger: Math.max(0, stats.hunger - 10)
         }));
-    };
+    }, [updateAnimalStats]);
 
-    const restAnimal = (id: string) => {
-        setAnimals(prev => prev.map(animal => {
-            if (animal.id === id) {
-                return {
-                    ...animal,
-                    stats: {
-                        ...animal.stats,
-                        sleep: Math.max(0, animal.stats.sleep - 10)
-                    }
-                };
-            }
-            return animal;
+    const restAnimal = useCallback((id: string) => {
+        updateAnimalStats(id, (stats) => ({
+            sleep: Math.max(0, stats.sleep - 10)
         }));
+    }, [updateAnimalStats]);
+
+    const value = {
+        animals,
+        addAnimal,
+        playWithAnimal,
+        feedAnimal,
+        restAnimal
     };
 
     return (
-        <AnimalContext.Provider value={{ 
-            animals, 
-            addAnimal, 
-            playWithAnimal,
-            feedAnimal,
-            restAnimal
-        }}>
+        <AnimalContext.Provider value={value}>
             {children}
         </AnimalContext.Provider>
     );
