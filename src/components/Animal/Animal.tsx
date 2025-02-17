@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Animal as AnimalType } from "../../types/animal.types";
 import { useAnimalContext } from "../../context/AnimalContext";
 import "./Animal.css";
@@ -6,19 +7,30 @@ import "./Animal.css";
  * This component displays a single stat of an animal.
  * It provides a button to perform an action on the animal which relates to the stat.
  */
-function AnimalStat(
-    { name, value, actionName, onClick }: { 
-        name: string, 
-        value: number, 
-        actionName: string,
-        onClick: () => void 
-    }
-) {
+interface AnimalStatProps {
+    name: string;
+    value: number;
+    actionName: string;
+    onClick: () => void;
+}
+
+const AnimalStat = memo(function AnimalStat({ 
+    name, 
+    value, 
+    actionName, 
+    onClick 
+}: AnimalStatProps) {
     return (
         <div className="stat">
             <strong>{name}:</strong>
             <div className="meter">
-                <div className="meter-fill" style={{ width: `${value}%` }} />
+                <div 
+                    className="meter-fill" 
+                    style={{ width: `${value}%` }} 
+                    aria-valuenow={value}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                />
             </div>
             <button 
                 className="action-button"
@@ -28,14 +40,18 @@ function AnimalStat(
                 {actionName}
             </button>
         </div>
-    )
-}
+    );
+});
 
 /**
  * This component displays the information and stats of an animal.
  * It provides buttons to perform actions on the animal.
  */
-export default function Animal({ animal }: { animal: AnimalType }) {
+interface AnimalProps {
+    animal: AnimalType;
+}
+
+export default memo(function Animal({ animal }: AnimalProps) {
     const { playWithAnimal, feedAnimal, restAnimal } = useAnimalContext();
 
     return (
@@ -44,8 +60,8 @@ export default function Animal({ animal }: { animal: AnimalType }) {
                 <h1>{animal.type}</h1>
                 <div className="animal-animal">
                     <img
-                        src={`src/svg/${animal.type}.svg`}
-                        alt="Your animal"
+                        src={`/src/svg/${animal.type}.svg`}
+                        alt={`${animal.name} the ${animal.type}`}
                         className="animal-image"
                     />
                     <h2>Animal Name</h2>
@@ -73,5 +89,5 @@ export default function Animal({ animal }: { animal: AnimalType }) {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+});
