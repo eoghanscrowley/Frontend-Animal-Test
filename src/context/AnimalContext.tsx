@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 
 import { Animal, AnimalType } from '../types/animal.types';
 import { ANIMAL_RATE_CONFIGS } from '../constants/animal.constants';
@@ -18,35 +18,33 @@ interface AnimalContextType {
 
 const AnimalContext = createContext<AnimalContextType | null>(null);
 
-/**
- * This component provides the AnimalContext to its children.
- * It manages the state of the animals and provides functions to interact with them.
- */
-export function AnimalProvider({ children }: { children: ReactNode }) {
-    const [animals, setAnimals] = useState<Animal[]>(initialAnimals);
+// Add new types for actions
+type AnimalAction = 
+  | { type: 'ADD_ANIMAL'; payload: { name: string; type: AnimalType } }
+  | { type: 'PLAY_WITH_ANIMAL'; payload: { id: string } }
+  | { type: 'FEED_ANIMAL'; payload: { id: string } }
+  | { type: 'REST_ANIMAL'; payload: { id: string } }
+  | { type: 'UPDATE_STATS' };
 
-    const updateAnimalStats = useCallback((
-        id: string,
-        updateFn: (stats: Animal['stats']) => Partial<Animal['stats']>
-    ) => {
-        setAnimals(prev => prev.map(animal => {
-            if (animal.id === id) {
-                return {
-                    ...animal,
-                    stats: {
-                        ...animal.stats,
-                        ...updateFn(animal.stats)
-                    }
-                };
-            }
-            return animal;
-        }));
-    }, []);
+// Add reducer function
+function animalReducer(state: Animal[], action: AnimalAction): Animal[] {
+    let newAnimal: Animal;
+    switch (action.type) {
+        case 'ADD_ANIMAL':
+            newAnimal = {
+                id: crypto.randomUUID(),
+                name: action.payload.name,
+                type: action.payload.type,
+                stats: {
+                    happiness: GAME_CONSTANTS.DEFAULT_STAT_VALUE,
+                    hunger: GAME_CONSTANTS.DEFAULT_STAT_VALUE,
+                    sleep: GAME_CONSTANTS.DEFAULT_STAT_VALUE,
+                },
+            };
+            return [...state, newAnimal];
 
-    // Add useEffect for periodic updates
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setAnimals(prev => prev.map(animal => {
+        case 'UPDATE_STATS':
+            return state.map(animal => {
                 const rates = ANIMAL_RATE_CONFIGS[animal.type];
                 const increasedRateCondition = (
                     animal.stats.hunger >= GAME_CONSTANTS.CRITICAL_STAT_THRESHOLD ||
@@ -74,52 +72,91 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
                         )
                     }
                 };
-            }));
+            });
+
+        case 'PLAY_WITH_ANIMAL':
+            return state.map(animal => 
+                animal.id === action.payload.id
+                    ? {
+                        ...animal,
+                        stats: {
+                            ...animal.stats,
+                            happiness: Math.min(
+                                GAME_CONSTANTS.MAX_STAT_VALUE,
+                                animal.stats.happiness + GAME_CONSTANTS.STAT_INCREMENT
+                            )
+                        }
+                    }
+                    : animal
+            );
+
+        case 'FEED_ANIMAL':
+            return state.map(animal =>
+                animal.id === action.payload.id
+                    ? {
+                        ...animal,
+                        stats: {
+                            ...animal.stats,
+                            hunger: Math.max(
+                                GAME_CONSTANTS.MIN_STAT_VALUE,
+                                animal.stats.hunger - GAME_CONSTANTS.STAT_INCREMENT
+                            )
+                        }
+                    }
+                    : animal
+            );
+
+        case 'REST_ANIMAL':
+            return state.map(animal =>
+                animal.id === action.payload.id
+                    ? {
+                        ...animal,
+                        stats: {
+                            ...animal.stats,
+                            sleep: Math.max(
+                                GAME_CONSTANTS.MIN_STAT_VALUE,
+                                animal.stats.sleep - GAME_CONSTANTS.STAT_INCREMENT
+                            )
+                        }
+                    }
+                    : animal
+            );
+
+        default:
+            return state;
+    }
+}
+
+/**
+ * This component provides the AnimalContext to its children.
+ * It manages the state of the animals and provides functions to interact with them.
+ */
+export function AnimalProvider({ children }: { children: ReactNode }) {
+    const [animals, dispatch] = useReducer(animalReducer, initialAnimals);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            dispatch({ type: 'UPDATE_STATS' });
         }, GAME_CONSTANTS.TICK_INTERVAL);
 
         return () => clearInterval(timer);
     }, []);
 
-    const addAnimal = useCallback((name: string, type: AnimalType) => {
-        const newAnimal: Animal = {
-            id: crypto.randomUUID(),
-            name,
-            type,
-            stats: {
-                happiness: GAME_CONSTANTS.DEFAULT_STAT_VALUE,
-                hunger: GAME_CONSTANTS.DEFAULT_STAT_VALUE,
-                sleep: GAME_CONSTANTS.DEFAULT_STAT_VALUE,
-            },
-        };
-        setAnimals(prev => [...prev, newAnimal]);
-    }, []);
+    const addAnimal = (name: string, type: AnimalType) => {
+        dispatch({ type: 'ADD_ANIMAL', payload: { name, type } });
+    };
 
-    const playWithAnimal = useCallback((id: string) => {
-        updateAnimalStats(id, (stats) => ({
-            happiness: Math.min(
-                GAME_CONSTANTS.MAX_STAT_VALUE,
-                stats.happiness + GAME_CONSTANTS.STAT_INCREMENT
-            )
-        }));
-    }, [updateAnimalStats]);
+    const playWithAnimal = (id: string) => {
+        dispatch({ type: 'PLAY_WITH_ANIMAL', payload: { id } });
+    };
 
-    const feedAnimal = useCallback((id: string) => {
-        updateAnimalStats(id, (stats) => ({
-            hunger: Math.max(
-                GAME_CONSTANTS.MIN_STAT_VALUE,
-                stats.hunger - GAME_CONSTANTS.STAT_INCREMENT
-            )
-        }));
-    }, [updateAnimalStats]);
+    const feedAnimal = (id: string) => {
+        dispatch({ type: 'FEED_ANIMAL', payload: { id } });
+    };
 
-    const restAnimal = useCallback((id: string) => {
-        updateAnimalStats(id, (stats) => ({
-            sleep: Math.max(
-                GAME_CONSTANTS.MIN_STAT_VALUE,
-                stats.sleep - GAME_CONSTANTS.STAT_INCREMENT
-            )
-        }));
-    }, [updateAnimalStats]);
+    const restAnimal = (id: string) => {
+        dispatch({ type: 'REST_ANIMAL', payload: { id } });
+    };
 
     const value = {
         animals,
